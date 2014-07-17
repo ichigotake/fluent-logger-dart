@@ -21,12 +21,32 @@ import '../lib/fluent-logger/fluent-logger.dart';
  * And run this file.
  */
 main() {
-  FluentLogger logger = new FluentLogger(host: '127.0.0.1', port: 24224);
-  test("Post an message", () {
-    logger.post("test.greet", {"greeting": "Hello world!"});
+  FluentLogger logger = new FluentLogger(host: '127.0.0.1', port: 24224, timeout: 300);
+
+  test("Post an message", (){
+    return logger.post("test.greet", {"greeting": "Hello world!"});
   });
-  test("Post an invalid message", () {
+
+  test("Post an message", (){
+    return logger.post("test.greet", {"greeting": "Good afternoon :)"});
+  });
+
+  test("Message must be type as Map", (){
     logger.post("test.greet", "Hello world!")
-      .then((Socket socket) => fail("Message must be type as Map."));
+      .then((e) => fail('failed'))
+      .catchError((e) => expectAsync(e));
   });
+
+  test("Destroy socket", (){
+    return logger.destroy();
+  });
+
+  test("Post an message after destroy socket", (){
+    return logger.post("test.greet", {"greeting": "Hello world!"});
+  });
+
+  test("Destroy socket", (){
+    return logger.destroy();
+  });
+
 }

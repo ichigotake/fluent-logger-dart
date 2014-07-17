@@ -1,46 +1,85 @@
 library FluentLogger;
 
-import 'dart:io' show Socket;
-import 'dart:async' show Future;
+import 'dart:io' show Socket, sleep;
+import 'dart:async' show Completer, Future;
 import 'dart:convert' show JsonEncoder;
 
 class FluentLogger {
 
+  Socket _socket;
   var _host;
   int _port;
-  int _timeout;
+  Duration _timeout;
+  int _maxRetryCount;
+  Duration _retryInterval;
   String _tagPrefix;
   JsonEncoder _packer;
 
-  FluentLogger({host, int port, int timeout, String tagPrefix}) {
+  FluentLogger({host, int port, Duration timeout, String tagPrefix, Duration retryInterval, int maxRetryCount}) {
     this._host = host != null ? host : '127.0.0.1';
     this._port = port != null ? port : 24224;
-    this._timeout = timeout != null ? timeout : 3000;
+    this._timeout = timeout != null ? timeout : 500;
+    this._maxRetryCount = maxRetryCount != null ? _maxRetryCount : 12;
+    this._retryInterval = retryInterval != null ? retryInterval : new Duration(milliseconds: 500);
     this._tagPrefix = tagPrefix;
     this._packer = new JsonEncoder();
   }
 
-  Future<Socket> post(String tag, Map message, {int timestamp}) {
-    if (!(message is Map)) {
-      throw new ArgumentTypeException("Message must be type as Map.");
-    }
+  Future<Socket> connect() {
+    return Socket.connect(_host, _port)
+      .timeout(_timeout)
+      .then((Socket socket){
+        _socket = socket;
+      })
+      .catchError((e){
+        if (_socket != null) {
+          _socket.destroy();
+        }
+        print("Cannot send data: ${e}");
+      });
+  }
 
+  Future post(String tag, Map message, {int timestamp}) {
+    Completer completer = new Completer();
+    if (!(message is Map)) {
+      completer.completeError("Message must be type as Map.");
+      return completer.future;
+    }
     String sendTag = _tagPrefix != null ? "${_tagPrefix}.${tag}" : tag;
     int sendTimestamp = timestamp != null ? timestamp : new DateTime.now().millisecondsSinceEpoch/1000;
     var sendData = _packer.convert([sendTag, sendTimestamp, message]);
-    return Socket.connect(_host, _port)
-      .timeout(new Duration(milliseconds: _timeout))
-      .then((Socket socket){
-        socket.listen(
-                (data){},
-                onDone: () => socket.destroy());
-      socket.write(sendData);
-      socket.close();
-      })
-      .catchError((e){
-        print("Cannot send data: ${e}");
-        return post(tag, message);
-      });
+
+    if (_socket == null) {
+      connect()
+        .then((Socket socket) => _send(completer, sendData))
+        .catchError((e){
+          print("Connect error: ${e}");
+          completer.complete(_socket);
+        });
+    } else {
+      _send(completer, sendData);
+    }
+    return completer.future;
+  }
+
+  void _send(Completer completer, sendData) {
+    int retries = 1;
+    while (true) {
+      sleep(_retryInterval);
+      if (retries++ > _maxRetryCount) {
+        completer.complete(_socket);
+        break;
+      }
+      _socket.write(sendData);
+      completer.complete(_socket);
+      break;
+    }
+  }
+
+  void destroy() {
+    if (_socket != null) {
+      _socket.destroy();
+    }
   }
 
 }
