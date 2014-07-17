@@ -21,7 +21,7 @@ import '../lib/fluent-logger/fluent-logger.dart';
  * And run this file.
  */
 main() {
-  FluentLogger logger = new FluentLogger(host: '127.0.0.1', port: 24224, timeout: 300);
+  FluentLogger logger = new FluentLogger(host: '127.0.0.1', port: 24224, timeout: new Duration(milliseconds: 300));
 
   test("Post an message", (){
     return logger.post("test.greet", {"greeting": "Hello world!"});

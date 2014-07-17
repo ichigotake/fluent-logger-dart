@@ -18,7 +18,7 @@ class FluentLogger {
   FluentLogger({host, int port, Duration timeout, String tagPrefix, Duration retryInterval, int maxRetryCount}) {
     this._host = host != null ? host : '127.0.0.1';
     this._port = port != null ? port : 24224;
-    this._timeout = timeout != null ? timeout : 500;
+    this._timeout = timeout != null ? timeout : new Duration(milliseconds: 500);
     this._maxRetryCount = maxRetryCount != null ? _maxRetryCount : 12;
     this._retryInterval = retryInterval != null ? retryInterval : new Duration(milliseconds: 500);
     this._tagPrefix = tagPrefix;
