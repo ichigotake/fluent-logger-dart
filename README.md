@@ -12,7 +12,13 @@ Will uploaded this to [https://pub.dartlang.org/](https://pub.dartlang.org/).
 
 ## Usage
 
-TBD
+``` dart
+FluentLogger logger = new FluentLogger(host: '127.0.0.1', port: 24224, timeout: 300);
+logger.post("test.greet", {"greeting": "Good afternoon :)"})
+  .then((e) => 'success!')
+  .catchError((e) => 'failed...')
+  .whenComplete((action) => logger.destroy());
+```
 
 ## TODO
 
