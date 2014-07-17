@@ -42,7 +42,7 @@ main() {
   });
 
   test("Post an message after destroy socket", (){
-    return logger.post("test.greet", {"greeting": "Hello world!"});
+    return logger.post("test.greet", {"greeting": "Good night..."});
   });
 
   test("Destroy socket", (){

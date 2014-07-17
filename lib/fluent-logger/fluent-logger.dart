@@ -79,6 +79,7 @@ class FluentLogger {
   void destroy() {
     if (_socket != null) {
       _socket.destroy();
+      _socket = null;
     }
   }
 
