@@ -54,6 +54,7 @@ class FluentLogger {
     var sendData = _packer.convert([sendTag, sendTimestamp, message]);
     buffer += sendData + "\n";
     if (sending) {
+      completer.complete();
       return completer.future;
     }
     sending = true;
