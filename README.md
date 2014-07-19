@@ -8,6 +8,8 @@ If found bug or issues, please contribute to [the fluent-logger-dart repository!
 
 ## Usage
 
+They currently only work on platforms where `dart:io` is available.
+
 ``` dart
 FluentLogger logger = new FluentLogger(host: '127.0.0.1', port: 24224, timeout: 300);
 logger.post("test.greet", {"greeting": "Good afternoon :)"})
