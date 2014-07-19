@@ -1,9 +1,19 @@
+/**
+ * Fluent logger for Dart.
+ *
+ * For information on installing and importing this library, see the
+ * [fluent_logger package on pub.dartlang.org]
+ * (http://pub.dartlang.org/packages/fluent_logger).
+ */
 library fluent_logger;
 
 import 'dart:io' show Socket, sleep;
 import 'dart:async' show Completer, Future;
 import 'dart:convert' show JsonEncoder;
 
+/**
+ * Use a [FluentLogger] to logging messages to fluentd.
+ */
 class FluentLogger {
 
   Socket _socket;
@@ -29,6 +39,9 @@ class FluentLogger {
     this._packer = new JsonEncoder();
   }
 
+  /**
+   * Connect to fluentd socket.
+   */
   Future<Socket> connect() {
     return Socket.connect(_host, _port)
       .timeout(_timeout)
@@ -43,6 +56,9 @@ class FluentLogger {
       });
   }
 
+  /**
+   * Post log message to fluentd.
+   */
   Future post(String tag, Map message, {int timestamp}) {
     Completer completer = new Completer();
     if (!(message is Map)) {
@@ -72,6 +88,9 @@ class FluentLogger {
     return completer.future;
   }
 
+  /**
+   * Send logging message to fluentd.
+   */
   _send(Completer completer, sendData) {
     sending = true;
     int retries = 1;
@@ -88,6 +107,9 @@ class FluentLogger {
     completer.complete(_socket);
   }
 
+  /**
+   * Destroy socket connection.
+   */
   void destroy() {
     if (_socket != null) {
       _socket.destroy();

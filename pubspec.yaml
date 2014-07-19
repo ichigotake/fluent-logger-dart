@@ -1,5 +1,5 @@
 name: fluent_logger
-description: fluent_logger implementation for Dart
+description: fluent logger implementation for Dart
 version: 0.1.0
 author: ichigotake <k.wisiiy@gmail.com>
 homepage: https://github.com/ichigotake/fluent-logger-dart

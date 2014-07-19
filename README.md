@@ -4,11 +4,7 @@ fluent-logger implementation for Dart inspired by [fluent-logger-perl](https://g
 
 UNDER DEVELOPMENT.
 
-## Install
-
-TBD
-
-Will uploaded this to [https://pub.dartlang.org/](https://pub.dartlang.org/).
+If found bug or issues, please contribute to [the fluent-logger-dart repository!](https://github.com/ichigotake/fluent-logger-dart/issues)
 
 ## Usage
 
@@ -23,8 +19,14 @@ logger.post("test.greet", {"greeting": "Good afternoon :)"})
 ## TODO
 
 - Retries posting message when failed to post to `fluentd`.
-- Write `Dart Doc`.
 
 ## License
 
 MIT License
+
+## See also
+
+- [https://github.com/ichigotake/fluent-logger-dart](https://github.com/ichigotake/fluent-logger-dart)
+- [https://pub.dartlang.org/packages/fluent_logger](https://pub.dartlang.org/fluent_logger)
+- [Fluentd | Open Source Log Management](http://www.fluentd.org/)
+- [https://github.com/fluent/fluentd](https://github.com/fluent/fluentd)
