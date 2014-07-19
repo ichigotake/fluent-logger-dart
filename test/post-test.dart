@@ -4,7 +4,7 @@ import 'dart:convert' show JSON;
 import 'dart:async';
 import 'dart:io' show Socket, Process, ProcessResult;
 import 'package:unittest/unittest.dart';
-import '../lib/fluent-logger/fluent-logger.dart';
+import '../lib/fluent_logger.dart';
 
 /**
  *

@@ -1,4 +1,4 @@
-library FluentLogger;
+library fluent_logger;
 
 import 'dart:io' show Socket, sleep;
 import 'dart:async' show Completer, Future;
@@ -16,7 +16,7 @@ class FluentLogger {
   JsonEncoder _packer;
 
   // For socket buffer
-  String buffer = "";
+  String _buffer = "";
   bool sending = false;
 
   FluentLogger({host, int port, Duration timeout, String tagPrefix, Duration retryInterval, int maxRetryCount}) {
@@ -37,7 +37,7 @@ class FluentLogger {
       })
       .catchError((e){
         if (_socket != null) {
-          _socket.destroy();
+          destroy();
         }
         print("Cannot connect socket: ${e}");
       });
@@ -52,7 +52,7 @@ class FluentLogger {
     String sendTag = _tagPrefix != null ? "${_tagPrefix}.${tag}" : tag;
     int sendTimestamp = timestamp != null ? timestamp : new DateTime.now().millisecondsSinceEpoch/1000;
     var sendData = _packer.convert([sendTag, sendTimestamp, message]);
-    buffer += sendData + "\n";
+    _buffer += sendData + "\n";
     if (sending) {
       completer.complete();
       return completer.future;
@@ -61,14 +61,13 @@ class FluentLogger {
 
     if (_socket == null) {
       connect()
-        .then((Socket socket) => _send(completer, buffer))
+        .then((Socket socket) => _send(completer, _buffer))
         .catchError((e){
-          print("Connect error: ${e}");
           sending = false;
           completer.complete(_socket);
         });
     } else {
-      _send(completer, buffer);
+      _send(completer, _buffer);
     }
     return completer.future;
   }
@@ -83,7 +82,7 @@ class FluentLogger {
       }
       _socket.write(sendData);
       sending = false;
-      buffer = "";
+      _buffer = "";
       break;
     }
     completer.complete(_socket);
