@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.1.2
+- Change owner email address
+
 ## v0.1.1
 - Write document for working on platform with `dart:io`
 

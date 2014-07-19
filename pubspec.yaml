@@ -1,7 +1,7 @@
 name: fluent_logger
 description: fluent logger implementation for Dart
 version: 0.1.1
-author: ichigotake <k.wisiiy@gmail.com>
+author: ichigotake <ichigotake.san@gmail.com>
 homepage: https://github.com/ichigotake/fluent-logger-dart
 dev_dependencies:
   unittest: ">=0.10.1+2 <0.11.0"
