@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.1.3
+## v0.1.4, v0.1.3
 - Misstake on publishing
 
 ## v0.1.2
