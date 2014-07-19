@@ -15,6 +15,10 @@ class FluentLogger {
   String _tagPrefix;
   JsonEncoder _packer;
 
+  // For socket buffer
+  String buffer = "";
+  bool sending = false;
+
   FluentLogger({host, int port, Duration timeout, String tagPrefix, Duration retryInterval, int maxRetryCount}) {
     this._host = host != null ? host : '127.0.0.1';
     this._port = port != null ? port : 24224;
@@ -48,21 +52,28 @@ class FluentLogger {
     String sendTag = _tagPrefix != null ? "${_tagPrefix}.${tag}" : tag;
     int sendTimestamp = timestamp != null ? timestamp : new DateTime.now().millisecondsSinceEpoch/1000;
     var sendData = _packer.convert([sendTag, sendTimestamp, message]);
+    buffer += sendData + "\n";
+    if (sending) {
+      return completer.future;
+    }
+    sending = true;
 
     if (_socket == null) {
       connect()
-        .then((Socket socket) => _send(completer, sendData))
+        .then((Socket socket) => _send(completer, buffer))
         .catchError((e){
           print("Connect error: ${e}");
+          sending = false;
           completer.complete(_socket);
         });
     } else {
-      _send(completer, sendData);
+      _send(completer, buffer);
     }
     return completer.future;
   }
 
   void _send(Completer completer, sendData) {
+    sending = true;
     int retries = 1;
     while (true) {
       sleep(_retryInterval);
@@ -72,6 +83,8 @@ class FluentLogger {
       }
       _socket.write(sendData);
       completer.complete(_socket);
+      sending = false;
+      buffer = "";
       break;
     }
   }

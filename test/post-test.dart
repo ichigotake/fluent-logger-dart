@@ -1,6 +1,7 @@
 library LiveTest;
 
 import 'dart:convert' show JSON;
+import 'dart:async';
 import 'dart:io' show Socket, Process, ProcessResult;
 import 'package:unittest/unittest.dart';
 import '../lib/fluent-logger/fluent-logger.dart';
@@ -45,8 +46,20 @@ main() {
     return logger.post("test.greet", {"greeting": "Good night..."});
   });
 
+  test("Too many post few times", (){
+    Completer completer = new Completer();
+    for (int i=0; i<1000; i++) {
+      new Future((){
+        logger.post("test.greet", {"greeting": "Storm greeting! " + i.toString()});
+      });
+    }
+    completer.complete();
+    return completer.future;
+  });
+
   test("Destroy socket", (){
     return logger.destroy();
   });
+
 
 }
