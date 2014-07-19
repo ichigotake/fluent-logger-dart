@@ -73,21 +73,20 @@ class FluentLogger {
     return completer.future;
   }
 
-  void _send(Completer completer, sendData) {
+  _send(Completer completer, sendData) {
     sending = true;
     int retries = 1;
     while (true) {
       sleep(_retryInterval);
       if (retries++ > _maxRetryCount) {
-        completer.complete(_socket);
         break;
       }
       _socket.write(sendData);
-      completer.complete(_socket);
       sending = false;
       buffer = "";
       break;
     }
+    completer.complete(_socket);
   }
 
   void destroy() {
