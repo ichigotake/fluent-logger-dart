@@ -39,7 +39,7 @@ class FluentLogger {
         if (_socket != null) {
           _socket.destroy();
         }
-        print("Cannot send data: ${e}");
+        print("Cannot connect socket: ${e}");
       });
   }
 
