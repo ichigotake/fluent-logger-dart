@@ -24,9 +24,6 @@ logger.post("test.greet", {"greeting": "Good afternoon :)"})
 
 - Retries posting message when failed to post to `fluentd`.
 - Write `Dart Doc`.
-- Generate `fluent.conf` before unit testing, and destroy working files on after unit test.
-- Specifies the parameter setting to `fluentd` on unit test.
-- Run `fluentd` server in unit test.
 
 ## License
 
