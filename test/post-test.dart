@@ -49,9 +49,7 @@ main() {
   test("Too many post few times", (){
     Completer completer = new Completer();
     for (int i=0; i<1000; i++) {
-      new Future((){
-        logger.post("test.greet", {"greeting": "Storm greeting! " + i.toString()});
-      });
+      logger.post("test.greet", {"greeting": "Storm greeting! " + i.toString()});
     }
     completer.complete();
     return completer.future;
