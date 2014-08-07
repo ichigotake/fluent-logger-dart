@@ -95,15 +95,21 @@ class FluentLogger {
     sending = true;
     int retries = 1;
     while (true) {
-      sleep(_retryInterval);
+      try {
+        _socket.write(sendData);
+        _buffer = "";
+        break;
+      } catch (e) {
+        print("Could not send data: ${_buffer}}\n${e}");
+      }
       if (retries++ > _maxRetryCount) {
+        print("Could not send data. Over the retry count as ${_maxRetryCount}: ${_buffer}}\n${e}");
         break;
       }
-      _socket.write(sendData);
-      sending = false;
-      _buffer = "";
-      break;
+      sleep(_retryInterval);
+      continue;
     }
+    sending = false;
     completer.complete(_socket);
   }
 
